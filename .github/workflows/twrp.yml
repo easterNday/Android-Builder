@@ -69,9 +69,19 @@ jobs:
       - name: ♋ Cleanup
         uses: rokibhasansagar/slimhub_actions@main
 
+      - uses: actions/setup-java@v3
+        with:
+          distribution: "<distribution>"
+          java-version: |
+            8
+            11
+            15
+
       - name: ♌ Prepare the build environment
         run: |
           cd ~
+          sudo apt update -y
+          sudo apt install wget unzip -y
           sudo apt install git aria2 -y
           git clone https://gitlab.com/OrangeFox/misc/scripts
           cd scripts
@@ -102,10 +112,8 @@ jobs:
           set +e
           source build/envsetup.sh
           export ALLOW_MISSING_DEPENDENCIES=true
-          export FOX_BUILD_DEVICE=thyme
-          export LC_ALL="C"
           set -e
-          lunch ${{ env.DEVICE_MAKEFILE }}-eng && mka adbd ${{ env.DEVICE_BOOT_PARTITION }}image -j$(nproc --all)
+          lunch ${{ env.DEVICE_MAKEFILE }}-eng && mka adbd ${{ env.DEVICE_BOOT_PARTITION }}image
 
       - name: ♑Take the OrangeFox build
         uses: actions/upload-artifact@v3
