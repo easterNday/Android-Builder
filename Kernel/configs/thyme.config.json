@@ -42,7 +42,8 @@
       "release": true
     },
     "enableKernelSU": true,
-    "enableLXC": false
+    "enableLXC": false,
+    "enableNetHunter": false
   },
   {
     "kernelSource": {
@@ -88,7 +89,8 @@
       }
     },
     "enableKernelSU": true,
-    "enableLXC": false
+    "enableLXC": false,
+    "enableNetHunter": false
   },
   {
     "kernelSource": {
@@ -151,11 +153,12 @@
       "release": true
     },
     "enableKernelSU": true,
-    "enableLXC": false
+    "enableLXC": false,
+    "enableNetHunter": false
   },
   {
     "kernelSource": {
-      "name": "Xiaomi10S（Google-Docker）",
+      "name": "Xiaomi10S（Google-Docker-NetHunter）",
       "repo": "https://codeberg.org/DogDayAndroid/android_kernel_xiaomi_thyme",
       "branch": "lineage-20.0",
       "device": "thyme",
@@ -197,6 +200,7 @@
       }
     },
     "enableKernelSU": true,
-    "enableLXC": true
+    "enableLXC": true,
+    "enableNetHunter": true
   }
 ]

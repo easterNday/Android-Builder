@@ -70,6 +70,9 @@ jobs:
       # Whether to enable LXC docker
       ENABLE_LXC: ${{ matrix.CONFIG.enableLXC }}
 
+      # Whether to enable NETHUNTER
+      ENABLE_NETHUNTER: ${{ matrix.CONFIG.enableNetHunter }}
+
       # Set output & ccache directory
       OUT_DIR: "${{ github.workspace }}/out"
       CCACHE_DIR: "${{ github.workspace }}/ccache"
@@ -260,7 +263,7 @@ jobs:
           # Add configuration
           for config in $(cat ${{ env.ADD_DEFCONFIG }})
           do
-            echo $i >> ${{ env.DEFCONFIG }}
+            echo $config >> ${{ env.DEFCONFIG }}
           done
 
           # Apply patch
@@ -289,9 +292,27 @@ jobs:
             echo "🎖️ Modify kernel/cgroup/cgroup.c"
           fi
           if [ -f android-kernel/net/netfilter/xt_qtaguid.c ]; then
-            git am -s < ${{ env.WORKSPACE }}/LXC/Patches/xt_qtaguid.patch
+            git am -s < ${{ env.WORKSPACE }}/Kernel/LXC/Patches/xt_qtaguid.patch
             echo "🎖️ Apply xt_qtaguid.patch"
           fi
+
+      - name: 😋 Setup Kali-Nethunter
+        working-directory: ${{ env.KERNEL_NAME }}
+        env:
+          DEFCONFIG: ${{ env.WORKSPACE }}/${{ env.KERNEL_NAME }}/arch/${{ steps.generate-args.outputs.ARCH }}/configs/${{env.KERNEL_DEFCONFIG_PATH}}
+        if: ${{ env.ENABLE_NETHUNTER == 'true' }}
+        run: |
+          git clone https://github.com/acai66/kali-nethunter_patches.git ${{ env.WORKSPACE }}/Nethunter
+          git am -s < ${{ env.WORKSPACE }}/Nethunter/add-rtl88xxau-5.6.4.2-drivers.patch
+          git am -s < ${{ env.WORKSPACE }}/Nethunter/add-wifi-injection-4.14.patch
+          git am -s < ${{ env.WORKSPACE }}/Nethunter/fix-ath9k-naming-conflict.patch
+          sleep 8
+          git clone https://github.com/acai66/Kali-defconfig-checker.git ${{ env.WORKSPACE }}/Kali
+          cd ${{ env.WORKSPACE }}/Kali
+          chmod +x *.sh
+          chmod +x check-kernel-config
+          ${{ env.WORKSPACE }}/Kali/check-kernel-config ${{ env.DEFCONFIG }} -w
+          echo "🎖️ Apply NetHunnter patches"
 
       - name: 👍 Start building the kernel
         working-directory: ${{ env.KERNEL_NAME }}

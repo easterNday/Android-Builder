@@ -60,6 +60,7 @@
       "release": true
     },
     "enableKernelSU": true,
-    "enableLXC": true
+    "enableLXC": true,
+    "enableNetHunter": false
   }
 ]
