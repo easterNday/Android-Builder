@@ -87,6 +87,12 @@ jobs:
       - name: 😄 Checkout
         uses: actions/checkout@v4
 
+      # Set Git Config to apply patches
+      - name: Set Git Config
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "github-actions@users.noreply.github.com"
+
       # Install prerequisites for Ubuntu
       - name: ⭐ Install prerequisites
         run: |
